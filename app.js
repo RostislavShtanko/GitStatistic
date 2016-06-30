@@ -1,4 +1,3 @@
-console.log(eval("2 + 3 * 2"));
 var https = require("https");
 var stdin = process.openStdin();
 
@@ -18,28 +17,25 @@ function checkInput(data){
 }
 
 function validateName(name) {
-
-  return true;
+  return /^[A-Za-z]+$/.test(name);
 }
 
 function requestToGithub(name){
   var request = https.request(options, function(response){
     var body = '';
-
     response.on("data", function(chunk){
-        readData(body, chunk);
+        body += chunk.toString('utf8');
     });
-    response.on("end", showResults, body);
+
+    response.on("end", function(){
+      showRes(body);
+    });
   });
   request.end();
 }
 
-function readData(body, chunk) {
-  body += chunk.toString('utf8');
-}
-
-function showResults(result) {
-  result = JSON.parse(result);
+function showRes(body){
+  var result = JSON.parse(body);
 
   if(result.type != undefined) {
     console.log("type: " + result.type + "\n public repos: "
