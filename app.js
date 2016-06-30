@@ -8,10 +8,14 @@ var options = {
     headers: {'user-agent': 'node.js'}
 };
 
-stdin.addListener("data", checkInput);
+stdin.addListener("data", getDataFromIput);
 
-function checkInput(data){
+function getDataFromIput(data){
   var name = data.toString().trim();
+  if(!validateName(name)){
+    console.log("Incorrect name");
+    return;
+  }
   options.path = '/users/' + name;
   requestToGithub(name);
 }
