@@ -1,52 +1,26 @@
-var https = require("https");
 var stdin = process.openStdin();
+var Requester = require('./requester').Requester;
 
-var options = {
-    host: 'api.github.com',
-    path: '/users/',
-    method: 'GET',
-    headers: {'user-agent': 'node.js'}
-};
+var requesterInstance = new Requester('api.github.com', '/users/', 'GET');
 
-stdin.addListener("data", getDataFromIput);
+stdin.addListener("data", function(data) {
+  getDataFromIput(data, validateName);
+});
 
-function getDataFromIput(data){
+function getDataFromIput(data, validator){
   var name = data.toString().trim();
-  if(!validateName(name)){
+  if(!validator(name)){
     console.log("Incorrect name");
     return;
   }
-  options.path = '/users/' + name;
-  requestToGithub(name);
+
+  requesterInstance.requestToGithub(name);
 }
 
 function validateName(name) {
   return /^[A-Za-z]+$/.test(name);
 }
 
-function requestToGithub(name){
-  var request = https.request(options, function(response){
-    var body = '';
-    response.on("data", function(chunk){
-        body += chunk.toString('utf8');
-    });
-
-    response.on("end", function(){
-      showRes(body);
-    });
-  });
-  request.end();
-}
-
-function showRes(body){
-  var result = JSON.parse(body);
-
-  if(result.type != undefined) {
-    console.log("type: " + result.type + "\n public repos: "
-     + result.public_repos + "\n followers: " + result.followers);
-  } else {
-    console.log("This user doesn't exist");
-  }
-}
-
 module.exports.validateName = validateName;
+module.exports.getDataFromIput = getDataFromIput;
+module.exports.requesterInstance = requesterInstance;
