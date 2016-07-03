@@ -5,8 +5,8 @@ var requesterInstance = require('../app.js').requesterInstance;
 var assert = require("assert");
 var sinon = require("sinon");
 
-describe('check name for validity', function(){
-  it('Should be false if name does not begin with letter', function(){
+describe('check name for validity', function() {
+  it('Should be false if name does not begin with letter', function() {
     assert.equal(false, validateName('_asfasf'));
     assert.equal(false, validateName('1asfasf'));
     assert.equal(false, validateName('2asfasf'));
@@ -24,7 +24,7 @@ describe('check name for validity', function(){
     assert.equal(false, validateName('$asfasf'));
   });
 
-  it('Should be false if name contains a space', function(){
+  it('Should be false if name contains a space', function() {
     assert.equal(false, validateName('a b'));
     assert.equal(false, validateName(' abc'));
     assert.equal(false, validateName('abc '));
